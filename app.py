@@ -4,15 +4,33 @@ from pages.logistics import logistics_page
 from pages.historical_data import historical_data_page
 from pages.transactional_ai import transactional_ai_page
 
-# Initialize session state for authentication
+# Set page title, icon, layout
+st.set_page_config(
+    page_title="Grid AI",
+    page_icon="🔋",
+    layout="wide",
+    initial_sidebar_state="collapsed"  # Sidebar starts collapsed
+)
+
+# Ensure session state for tracking authentication and navigation
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
     st.session_state["username"] = None
+if "current_page" not in st.session_state:
+    st.session_state["current_page"] = "Enter Historical Data"  # Default landing page after login
 
-# Sidebar Navigation
+# 🛑 **Hide Sidebar for Login/Signup Page**
 if not st.session_state["authenticated"]:
-    st.sidebar.title("🔑 Authentication")
-    page = st.sidebar.radio("Navigation", ["Login", "Sign Up"])
+    hide_sidebar_style = """
+        <style>
+        [data-testid="stSidebarNav"], header {display: none;}  /* Hide sidebar + Streamlit header */
+        </style>
+    """
+    st.markdown(hide_sidebar_style, unsafe_allow_html=True)
+
+    # Show Login/Signup Page
+    st.title("Welcome to Grid AI ⚡")
+    page = st.radio("Navigation", ["Login", "Sign Up"], horizontal=True)
 
     if page == "Login":
         login_page()
@@ -20,16 +38,37 @@ if not st.session_state["authenticated"]:
         signup_page()
 
 else:
+    # 🎯 **Show Sidebar After Login**
     st.sidebar.title(f"👋 Welcome, {st.session_state['username']}!")
-    page = st.sidebar.radio("Navigation", ["Logistics", "Enter Historical Data", "Transactional AI", "Logout"])
 
-    if page == "Logistics":
-        logistics_page()
-    elif page == "Enter Historical Data":
+    # Sidebar navigation that doesn't reset
+    page = st.sidebar.radio(
+        "Navigation",
+        ["Enter Historical Data", "Logistics", "Transactional AI", "Logout"],
+        index=["Enter Historical Data", "Logistics", "Transactional AI", "Logout"].index(st.session_state["current_page"])
+    )
+
+    # Preserve the selected page
+    st.session_state["current_page"] = page
+
+    # Render the selected page
+    if page == "Enter Historical Data":
         historical_data_page()
+    elif page == "Logistics":
+        logistics_page()
     elif page == "Transactional AI":
         transactional_ai_page()
     elif page == "Logout":
         st.session_state["authenticated"] = False
         st.session_state["username"] = None
+        st.session_state["current_page"] = "Enter Historical Data"  # Reset default page after logout
         st.rerun()
+
+# Hide Streamlit default sidebar elements
+hide_sidebar_style = """
+    <style>
+    [data-testid="stSidebarNav"] {display: none;}  /* Hide sidebar navigation (top-left) */
+    header {display: none;}  /* Hide Streamlit default header */
+    </style>
+"""
+st.markdown(hide_sidebar_style, unsafe_allow_html=True)

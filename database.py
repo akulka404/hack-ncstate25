@@ -24,10 +24,12 @@ def hash_password(password):
     """Hashes a password using bcrypt."""
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
+
 # 🔹 Function to check passwords
 def check_password(password, hashed):
     """Checks if a plaintext password matches the hashed password."""
     return bcrypt.checkpw(password.encode(), hashed.encode())
+
 
 # 🔹 Register User in SQLite
 def register_user(username, password):
@@ -40,6 +42,7 @@ def register_user(username, password):
     except sqlite3.IntegrityError:
         return False  # Username already exists
 
+
 # 🔹 Authenticate User in SQLite
 def authenticate_user(username, password):
     """Authenticates user by checking the hashed password in SQLite."""
@@ -50,24 +53,19 @@ def authenticate_user(username, password):
         return True
     return False
 
-import os
-from pymongo import MongoClient
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# MongoDB Setup
+from pymongo import MongoClient
 
 # MongoDB Atlas URI from .env file
 ATLAS_URI = os.getenv("MONGO_URI")  # Ensure this is set in .env
-DB_NAME = "energy_db"
-COLLECTION_NAME = "historical_data"
+
 
 class AtlasClient:
     """MongoDB Atlas Client to manage database connections and operations."""
 
-    def __init__(self, atlas_uri, dbname):
+    def __init__(self, atlas_uri):
         self.mongodb_client = MongoClient(atlas_uri)
-        self.database = self.mongodb_client[dbname]
 
     def ping(self):
         """Test MongoDB connection."""
@@ -77,44 +75,59 @@ class AtlasClient:
         except Exception as e:
             print(f"❌ MongoDB Ping Error: {e}")
 
-    def get_collection(self, collection_name):
-        """Retrieve a collection from the database."""
-        return self.database[collection_name]
+    def get_collection(self, dbname, collection_name):
+        """Retrieve a collection from a specific database."""
+        database = self.mongodb_client[dbname]
+        return database[collection_name]
 
-    def insert_data(self, collection_name, data):
-        """Insert one document into a collection."""
-        collection = self.database[collection_name]
-        return collection.insert_one(data)
+    def insert_data(self, dbname, collection_name, data):
+        """Insert one or more documents into a collection."""
+        collection = self.get_collection(dbname, collection_name)
+        if isinstance(data, list):
+            return collection.insert_many(data)
+        else:
+            return collection.insert_one(data)
 
-    def find_data(self, collection_name, filter={}, limit=0):
+    def find_data(self, dbname, collection_name, filter={}, limit=0):
         """Retrieve data from a collection."""
-        collection = self.database[collection_name]
+        collection = self.get_collection(dbname, collection_name)
         return list(collection.find(filter=filter, limit=limit))
+
+    def delete_all_data(self, dbname, collection_name):
+        """Delete all data from a collection."""
+        collection = self.get_collection(dbname, collection_name)
+        result = collection.delete_many({})
+        return result.deleted_count
 
 
 # Initialize MongoDB connection
-atlas_client = AtlasClient(ATLAS_URI, DB_NAME)
+atlas_client = AtlasClient(ATLAS_URI)
 atlas_client.ping()
 
-# Function to insert historical data
-def insert_historical_data(data):
-    """Inserts multiple records into MongoDB."""
+
+# Generalized Functions for Database Operations
+def insert_data(dbname, collection_name, data):
+    """Insert data into a specified database and collection."""
     try:
-        collection = atlas_client.get_collection(COLLECTION_NAME)
-        if isinstance(data, list):
-            collection.insert_many(data)
-        else:
-            collection.insert_one(data)
-        return True
+        return atlas_client.insert_data(dbname, collection_name, data)
     except Exception as e:
         print(f"❌ MongoDB Insert Error: {e}")
-        return False
+        return None
 
-# Function to fetch historical data
-def fetch_historical_data():
-    """Fetches all records from MongoDB."""
+
+def fetch_data(dbname, collection_name, filter={}, limit=0):
+    """Fetch data from a specified database and collection."""
     try:
-        return atlas_client.find_data(COLLECTION_NAME)
+        return atlas_client.find_data(dbname, collection_name, filter, limit)
     except Exception as e:
         print(f"❌ MongoDB Fetch Error: {e}")
         return []
+
+
+def delete_all_data(dbname, collection_name):
+    """Delete all data from a specified database and collection."""
+    try:
+        return atlas_client.delete_all_data(dbname, collection_name)
+    except Exception as e:
+        print(f"❌ MongoDB Deletion Error: {e}")
+        return 0
