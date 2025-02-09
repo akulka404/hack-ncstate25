@@ -3,6 +3,7 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 
+
 class ExpenditurePredictor:
     def __init__(self, sequence_length=4, n_features=5):
         self.model = self._build_model(sequence_length, n_features)
@@ -32,3 +33,11 @@ class ExpenditurePredictor:
     def predict(self, X):
         """Predict expenditure"""
         return self.model.predict(X)
+        
+    def save(self, path):
+        """Save the underlying Keras model"""
+        self.model.save(path)
+        
+    def load(self, path):
+        """Load a saved model"""
+        self.model = tf.keras.models.load_model(path)

@@ -7,28 +7,38 @@ class DynamicTradingEngine:
         self.max_fluctuation = max_fluctuation
         
     def calculate_dynamic_price(self, total_supply, total_demand, time_of_day, season):
-        """Calculate dynamic price based on multiple factors"""
         if total_demand == 0:
             return self.base_rate
             
-        # Supply-demand ratio impact
+        # Increase supply-demand impact
         supply_demand_ratio = total_supply / total_demand
-        price_adjustment = np.clip(1 - supply_demand_ratio,
-                                -self.max_fluctuation,
-                                self.max_fluctuation)
+        price_adjustment = np.clip(1 - supply_demand_ratio, 
+                                -self.max_fluctuation * 2,  # Double the max fluctuation
+                                self.max_fluctuation * 2)
         
-        # Time of day factor (peak vs off-peak)
-        time_multiplier = 1.2 if 9 <= time_of_day <= 20 else 0.8
+        # More dramatic time-of-day pricing
+        if 9 <= time_of_day <= 11:  # Morning peak
+            time_multiplier = 1.4
+        elif 14 <= time_of_day <= 16:  # Afternoon peak
+            time_multiplier = 1.6
+        elif 19 <= time_of_day <= 21:  # Evening peak
+            time_multiplier = 1.8
+        else:
+            time_multiplier = 0.7  # Off-peak discount
         
-        # Seasonal factor
+        # More pronounced seasonal factors
         season_multipliers = {
-            'summer': 1.4,  # Higher demand due to cooling
-            'winter': 1.3,  # Higher demand due to heating
-            'spring': 1.0,
-            'fall': 1.0
+            'summer': 1.8,  # Higher cooling demand
+            'winter': 1.6,  # Higher heating demand
+            'spring': 0.9,
+            'fall': 0.8
         }
         
-        final_price = self.base_rate * (1 + price_adjustment) * time_multiplier * season_multipliers[season]
+        # Add random market volatility
+        volatility = np.random.uniform(-0.1, 0.1)
+        
+        final_price = self.base_rate * (1 + price_adjustment) * time_multiplier * \
+                    season_multipliers[season] * (1 + volatility)
         return round(final_price, 4)
 
     def match_orders(self, sellers_df, buyers_df, current_time, season):
