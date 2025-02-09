@@ -1,3 +1,8 @@
 hacknc/
 __pycache__\
 pages\__pycache__\*
+env/
+pages/
+.DS_Store
+__pycache__/
+rmf/

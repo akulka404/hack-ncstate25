@@ -16,3 +16,17 @@ How useful is this project to the problem?
 
 - [ ] Theme <br>
 How well does the project fit the track and theme?
+
+install requirements `pip3 install -r requirements.txt`
+
+run blockchain 
+
+`terminal 1: cd gridwise-blockchain; npm install; npx hardhat compile`
+
+`terminal 1: npx hardhat node`
+
+`terminal 2: cd gridwise-blockchain; npx hardhat run scripts/deploy.js --network localhost`
+
+`terminal 3: python3 energy_shown.py`
+
+
