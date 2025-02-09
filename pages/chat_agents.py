@@ -2,12 +2,18 @@ import streamlit as st
 import requests
 import json
 import time
+import os
+from dotenv import load_dotenv
 
-H1 = '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'
-H2 = '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'
-H3 = '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'
-H4 = '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'
-H5 = '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'
+# Load environment variables
+load_dotenv()
+
+H1 = os.getenv("H1")
+H2 = os.getenv("H2")
+H3 = os.getenv("H3")
+H4 = os.getenv("H4")
+H5 = os.getenv("H5")
+
 
 import streamlit as st
 import requests

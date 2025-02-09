@@ -7,6 +7,7 @@ from pages.forecasting_energy import forecasting_energy_page  # ✅ NEW: Import 
 from pages.vizmagic import vizmagic_page
 from pages.analytics import analytics_page
 from pages.energy_page import energy_page
+from pages.chat_agents import chat_between_agents
 
 
 
@@ -58,6 +59,7 @@ else:
         "Trade Visualization",
         "Analytics",
         "Blockchain",
+        "AI Bot Bargain",
         "Logout"],
     )
 
@@ -79,6 +81,8 @@ else:
         analytics_page()
     elif page == "Blockchain":
         energy_page()
+    elif page == "AI Bot Bargain":
+        chat_between_agents()
     elif page == "Logout":
         st.session_state["authenticated"] = False
         st.session_state["username"] = None
