@@ -1,5 +1,5 @@
 hacknc/
-__pycache__\
+__pycache__\*
 pages\__pycache__\*
 env/
 pages/

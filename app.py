@@ -5,6 +5,10 @@ from pages.historical_data import historical_data_page
 from pages.transactional_ai import transactional_ai_page
 from pages.forecasting_energy import forecasting_energy_page  # ✅ NEW: Import Forecasting Page
 from pages.vizmagic import vizmagic_page
+from pages.analytics import analytics_page
+from pages.energy_page import energy_page
+
+
 
 # Set page title, icon, layout
 st.set_page_config(
@@ -51,7 +55,9 @@ else:
         "Logistics",
         "Transactional AI",
         "Forecasting Energy",
-        "Trade Visualization",  # ✅ NEW PAGE
+        "Trade Visualization",
+        "Analytics",
+        "Blockchain",
         "Logout"],
     )
 
@@ -69,6 +75,10 @@ else:
         forecasting_energy_page()
     elif page == "Trade Visualization":
         vizmagic_page()
+    elif page == "Analytics":
+        analytics_page()
+    elif page == "Blockchain":
+        energy_page()
     elif page == "Logout":
         st.session_state["authenticated"] = False
         st.session_state["username"] = None
