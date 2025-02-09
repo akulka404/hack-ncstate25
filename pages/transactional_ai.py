@@ -32,6 +32,7 @@ def transactional_ai_page():
             st.error("❌ The lowest selling price cannot be greater than or equal to the highest buying price.")
         else:
             data_dict = [{
+                "house_name": 'H5',
                 "lowest_selling_price": lowest_selling_price,
                 "highest_buying_price": highest_buying_price,
             }]
