@@ -4,6 +4,7 @@ from pages.logistics import logistics_page
 from pages.historical_data import historical_data_page
 from pages.transactional_ai import transactional_ai_page
 from pages.chat_agents import chat_between_agents  # Import Chat Agents Page
+from pages.vizmagic import vizmagic_page
 
 # Set page title, icon, layout
 st.set_page_config(
@@ -44,9 +45,14 @@ else:
 
     # Sidebar navigation that doesn't reset
     page = st.sidebar.radio(
-        "Navigation",
-        ["Enter Historical Data", "Logistics", "Transactional AI", "Chat Agents", "Logout"],  # Added Chat Agents
-        index=["Enter Historical Data", "Logistics", "Transactional AI", "Chat Agents", "Logout"].index(st.session_state["current_page"])
+    "Navigation",
+    [
+        "Enter Historical Data",
+        "Logistics",
+        "Transactional AI",
+        "Forecasting Energy",
+        "Trade Visualization",  # ✅ NEW PAGE
+        "Logout"],
     )
 
     # Preserve the selected page
@@ -61,6 +67,8 @@ else:
         transactional_ai_page()
     elif page == "Chat Agents":
         chat_between_agents()  # Load Chat Agents Page
+    elif page == "Trade Visualization":
+        vizmagic_page()
     elif page == "Logout":
         st.session_state["authenticated"] = False
         st.session_state["username"] = None
@@ -75,3 +83,23 @@ hide_sidebar_style = """
     </style>
 """
 st.markdown(hide_sidebar_style, unsafe_allow_html=True)
+
+# Custom CSS for resizing and spacing sidebar elements
+sidebar_style = """
+    <style>
+    [data-testid="stSidebarNav"] ul {
+        font-size: 18px; /* Increase font size for navigation items */
+        margin-top: 20px; /* Add space between items */
+    }
+    [data-testid="stSidebarNav"] li {
+        margin-bottom: 15px; /* Add more spacing between each item */
+    }
+    [data-testid="stSidebarNav"] {
+        font-weight: bold; /* Make the text bold */
+        width: 250px; /* Adjust sidebar width */
+    }
+    </style>
+"""
+
+# Inject CSS into the Streamlit app
+st.markdown(sidebar_style, unsafe_allow_html=True)
