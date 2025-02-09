@@ -21,7 +21,9 @@ install requirements `pip3 install -r requirements.txt`
 
 run blockchain 
 
-`terminal 1: cd gridwise-blockchain; npx hardhat node`
+`terminal 1: cd gridwise-blockchain; npm install; npx hardhat compile`
+
+`terminal 1: npx hardhat node`
 
 `terminal 2: cd gridwise-blockchain; npx hardhat run scripts/deploy.js --network localhost`
 
