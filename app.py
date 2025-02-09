@@ -3,7 +3,7 @@ from auth import login_page, signup_page
 from pages.logistics import logistics_page
 from pages.historical_data import historical_data_page
 from pages.transactional_ai import transactional_ai_page
-from pages.chat_agents import chat_between_agents  # Import Chat Agents Page
+from pages.forecasting_energy import forecasting_energy_page  # ✅ NEW: Import Forecasting Page
 from pages.vizmagic import vizmagic_page
 
 # Set page title, icon, layout
@@ -65,8 +65,8 @@ else:
         logistics_page()
     elif page == "Transactional AI":
         transactional_ai_page()
-    elif page == "Chat Agents":
-        chat_between_agents()  # Load Chat Agents Page
+    elif page == "Forecasting Energy":  # ✅ NEW: Handle Forecasting Page
+        forecasting_energy_page()
     elif page == "Trade Visualization":
         vizmagic_page()
     elif page == "Logout":
