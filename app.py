@@ -3,6 +3,7 @@ from auth import login_page, signup_page
 from pages.logistics import logistics_page
 from pages.historical_data import historical_data_page
 from pages.transactional_ai import transactional_ai_page
+from pages.chat_agents import chat_between_agents  # Import Chat Agents Page
 
 # Set page title, icon, layout
 st.set_page_config(
@@ -44,8 +45,8 @@ else:
     # Sidebar navigation that doesn't reset
     page = st.sidebar.radio(
         "Navigation",
-        ["Enter Historical Data", "Logistics", "Transactional AI", "Logout"],
-        index=["Enter Historical Data", "Logistics", "Transactional AI", "Logout"].index(st.session_state["current_page"])
+        ["Enter Historical Data", "Logistics", "Transactional AI", "Chat Agents", "Logout"],  # Added Chat Agents
+        index=["Enter Historical Data", "Logistics", "Transactional AI", "Chat Agents", "Logout"].index(st.session_state["current_page"])
     )
 
     # Preserve the selected page
@@ -58,6 +59,8 @@ else:
         logistics_page()
     elif page == "Transactional AI":
         transactional_ai_page()
+    elif page == "Chat Agents":
+        chat_between_agents()  # Load Chat Agents Page
     elif page == "Logout":
         st.session_state["authenticated"] = False
         st.session_state["username"] = None
